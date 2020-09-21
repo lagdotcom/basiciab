@@ -1,0 +1,25 @@
+{
+	"name": "basiciab",
+	"version": "0.1.0",
+	"description": "BASIC in a Browser!",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "webpack -p",
+		"dev": "webpack -d",
+		"start": "webpack-dev-server -d --content-base ./dist --open",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Lag.Com <lagdotcom@gmail.com>",
+	"license": "ISC",
+	"devDependencies": {
+		"css-loader": "^4.3.0",
+		"file-loader": "^6.1.0",
+		"source-map-loader": "^1.1.0",
+		"style-loader": "^1.2.1",
+		"ts-loader": "^8.0.4",
+		"typescript": "^4.0.3",
+		"webpack": "^4.44.2",
+		"webpack-cli": "^3.3.12",
+		"webpack-dev-server": "^3.11.0"
+	}
+}
