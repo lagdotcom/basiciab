@@ -11,7 +11,9 @@ function doFor(
 	end: number,
 	step: number
 ) {
-	sys.vars.set(v, init);
+	if (sys.vars.has(v)) sys.vars.set(v, init);
+	else sys.vars.add(v, { value: init });
+
 	sys.stack.push({
 		type: 'for',
 		v,

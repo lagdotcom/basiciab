@@ -3,6 +3,9 @@ import Token, { BinaryToken } from './types/Token';
 import Vars from './Vars';
 import Fns from './Fns';
 import Display from './types/Display';
+import Program from './types/Program';
+import Line from './types/Line';
+import Keywords from './Keywords';
 
 export enum SystemState {
 	Interpret,
@@ -11,6 +14,7 @@ export enum SystemState {
 
 export default class System {
 	line: number;
+	program: Program;
 	raf?: number;
 	stack: Clause[];
 	state: SystemState;
@@ -28,11 +32,22 @@ export default class System {
 
 		display.attach(this);
 		this.line = 0;
+		this.program = { name: 'unnamed', lines: [] };
 		this.stack = [];
 		this.state = SystemState.Interpret;
 		this.statement = 0;
 
 		this.tick = this.tick.bind(this);
+	}
+
+	get currentline() {
+		const line = this.program.lines.find(l => l.label === this.line);
+		if (!line) throw new Error(`Unknown label: ${this.line}`);
+		return line;
+	}
+
+	get currentstatement() {
+		return this.currentline.statements[this.statement];
 	}
 
 	get topclause() {
@@ -104,5 +119,51 @@ export default class System {
 		}
 
 		throw new Error(`Unsupported binary op: ${t.op}`);
+	}
+
+	add(...lines: Line[]) {
+		var needSort = false;
+
+		lines.forEach(nl => {
+			const i = this.program.lines.findIndex(l => l.label == nl.label);
+			if (i === -1) {
+				this.program.lines.push(nl);
+				needSort = true;
+			} else {
+				this.program.lines[i] = nl;
+			}
+		});
+
+		this.program.lines.sort((a, b) => a.label - b.label);
+	}
+
+	run(start?: number) {
+		// TODO: this doesn't work with raf
+
+		if (!this.program.lines.length) throw new Error('No lines in program');
+		if (typeof start === 'undefined') start = this.program.lines[0].label;
+
+		this.state = SystemState.Execute;
+		this.line = start;
+		this.statement = 0;
+		while (this.state == SystemState.Execute) {
+			const statement = this.currentstatement;
+			Keywords[statement.keyword].execute(this, statement);
+
+			this.statement++;
+			if (this.statement == this.currentline.statements.length) {
+				const i = this.program.lines.indexOf(this.currentline);
+				if (i == this.program.lines.length - 1) {
+					// TODO: message?
+					this.state = SystemState.Interpret;
+					return;
+				} else {
+					this.line = this.program.lines[i + 1].label;
+					this.statement = 0;
+				}
+			}
+		}
+
+		// TODO: message?
 	}
 }
