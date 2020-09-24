@@ -2,21 +2,20 @@ import Palette, { Black, DarkGrey, LightGrey } from './Palette';
 import System from './System';
 import { Var } from './Vars';
 
-export default class Display {
-	bg: Var<number>;
-	border: Var<number>;
-	cols: Var<number>;
-	cx: Var<number>;
-	cy: Var<number>;
-	fg: Var<number>;
+export default class CanvasDisplay {
+	bg!: Var<number>;
+	border!: Var<number>;
+	cols!: Var<number>;
+	cx!: Var<number>;
+	cy!: Var<number>;
+	fg!: Var<number>;
 	inner!: CanvasRenderingContext2D;
 	innerCanvas!: HTMLCanvasElement;
 	outer: CanvasRenderingContext2D;
 	needsResize!: boolean;
-	rows: Var<number>;
+	rows!: Var<number>;
 
 	constructor(
-		public system: System,
 		public outerCanvas: HTMLCanvasElement,
 		public tileWidth: number = 8,
 		public tileHeight: number = 8
@@ -34,19 +33,22 @@ export default class Display {
 		};
 		window.addEventListener('resize', outerResize);
 		outerResize();
+	}
 
+	attach(sys: System) {
 		const set = (v: Var<number>, value: number) => {
 			v.value = value;
 			this.needsResize = true;
 		};
-		this.rows = system.vars.add('__rows', { value: 40, set });
-		this.cols = system.vars.add('__cols', { value: 50, set });
 
-		this.fg = system.vars.add('__fg', { value: LightGrey });
-		this.bg = system.vars.add('__bg', { value: Black });
-		this.border = system.vars.add('__border', { value: DarkGrey });
-		this.cx = system.vars.add('__cx', { value: 0 });
-		this.cy = system.vars.add('__cy', { value: 0 });
+		this.rows = sys.vars.add('__rows', { value: 40, set });
+		this.cols = sys.vars.add('__cols', { value: 50, set });
+
+		this.fg = sys.vars.add('__fg', { value: LightGrey });
+		this.bg = sys.vars.add('__bg', { value: Black });
+		this.border = sys.vars.add('__border', { value: DarkGrey });
+		this.cx = sys.vars.add('__cx', { value: 0 });
+		this.cy = sys.vars.add('__cy', { value: 0 });
 		this.resize();
 	}
 

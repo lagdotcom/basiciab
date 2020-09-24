@@ -1,8 +1,8 @@
 import Clause from './types/Clause';
-import Display from './Display';
 import Token, { BinaryToken } from './types/Token';
 import Vars from './Vars';
 import Fns from './Fns';
+import Display from './types/Display';
 
 export enum SystemState {
 	Interpret,
@@ -10,15 +10,14 @@ export enum SystemState {
 }
 
 export default class System {
-	display: Display;
 	line: number;
-	raf: number;
+	raf?: number;
 	stack: Clause[];
 	state: SystemState;
 	statement: number;
 	vars: Vars;
 
-	constructor(canvas: HTMLCanvasElement) {
+	constructor(public display: Display) {
 		this.vars = new Vars();
 		this.vars.add('__version$', {
 			value: '',
@@ -27,20 +26,22 @@ export default class System {
 			},
 		});
 
-		this.display = new Display(this, canvas);
+		display.attach(this);
 		this.line = 0;
 		this.stack = [];
 		this.state = SystemState.Interpret;
 		this.statement = 0;
 
 		this.tick = this.tick.bind(this);
-
-		//console.log('System: started');
-		this.raf = requestAnimationFrame(this.tick);
 	}
 
 	get topclause() {
 		if (this.stack.length) return this.stack[this.stack.length - 1];
+	}
+
+	start() {
+		//console.log('System: started');
+		this.raf = requestAnimationFrame(this.tick);
 	}
 
 	tick(t: number) {

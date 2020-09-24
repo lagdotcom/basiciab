@@ -1,35 +1,7 @@
 import { assert } from 'chai';
+import { LINE, ST, VAR, NUM, FN, OP } from './helpers';
 import { renderLine, renderStatement } from './rendering';
 import Line from './types/Line';
-import Statement from './types/Statement';
-import Token, {
-	BinaryOp,
-	BinaryToken,
-	FnToken,
-	NumberToken,
-	VariableToken,
-} from './types/Token';
-
-const LINE = (label: number, ...statements: Statement[]) => ({
-	label,
-	statements,
-});
-const ST = (keyword: string, ...args: Token[]): Statement => ({
-	keyword,
-	args,
-});
-const VAR = (name: string): VariableToken => ({ type: 'variable', name });
-const NUM = (value: number): NumberToken => ({ type: 'number', value });
-const FN = (name: string, ...args: Token[]): FnToken => ({
-	type: 'fn',
-	name,
-	args,
-});
-const OP = (left: Token, op: BinaryOp, right: Token): BinaryToken => ({
-	type: 'binary',
-	op,
-	args: [left, right],
-});
 
 describe('rendering', () => {
 	it('should render a simple program', () => {

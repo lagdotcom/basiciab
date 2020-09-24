@@ -12,7 +12,7 @@ export default class Vars {
 	}
 
 	has(name: string) {
-		return !!this.vars[name];
+		return !!this.vars[name.toLowerCase()];
 	}
 
 	add<T>(name: string, v: Var<T>) {
@@ -21,7 +21,7 @@ export default class Vars {
 	}
 
 	get<T>(name: string) {
-		const v = this.vars[name] as Var<T>;
+		const v = this.vars[name.toLowerCase()] as Var<T>;
 		if (!v) throw new Error(`Undefined var: ${name}`);
 
 		if (v.get) return v.get(v);
@@ -29,7 +29,7 @@ export default class Vars {
 	}
 
 	set<T>(name: string, value: T) {
-		const v = this.vars[name] as Var<T>;
+		const v = this.vars[name.toLowerCase()] as Var<T>;
 		if (!v) throw new Error(`Undefined var: ${name}`);
 
 		if (v.set) v.set(v, value);
