@@ -1,9 +1,16 @@
 import Keywords from './Keywords';
 import Line from './types/Line';
 import Statement from './types/Statement';
-import Token from './types/Token';
+import Token, { BinaryOp } from './types/Token';
 
-export default function render(t: Token): string {
+const precedence: { [op in BinaryOp]: number } = {
+	'+': 1,
+	'-': 1,
+	'*': 2,
+	'/': 2,
+};
+
+export default function render(t: Token, parent: number = 0): string {
 	switch (t.type) {
 		case 'variable':
 			return t.name;
@@ -15,7 +22,14 @@ export default function render(t: Token): string {
 			return `"${t.value}"`;
 
 		case 'binary':
-			return `${render(t.args[0])} ${t.op} ${render(t.args[1])}`;
+			const [left, right] = t.args;
+			const prec = precedence[t.op];
+			const base = `${render(left, prec)} ${t.op} ${render(right, prec)}`;
+			if (prec < parent) return `(${base})`;
+			return base;
+
+		case 'fn':
+			return `${t.name.toUpperCase()}(${t.args.map(render).join(', ')})`;
 	}
 }
 

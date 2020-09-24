@@ -11,6 +11,10 @@ export default class Vars {
 		this.vars = {};
 	}
 
+	has(name: string) {
+		return !!this.vars[name];
+	}
+
 	add<T>(name: string, v: Var<T>) {
 		this.vars[name] = v;
 		return v;
