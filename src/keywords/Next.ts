@@ -1,3 +1,4 @@
+import { parseable } from '../parsing';
 import r from '../rendering';
 import System, { SystemState } from '../System';
 import { ForClause } from '../types/Clause';
@@ -21,6 +22,7 @@ function doNext(sys: System, clause: ForClause) {
 type NextArgs = [v: VariableToken];
 export const Next: Keyword = {
 	name: 'next',
+	expression: parseable('NEXT {var}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');
@@ -40,6 +42,7 @@ export const Next: Keyword = {
 
 export const NextImplicit: Keyword = {
 	name: 'next-implicit',
+	expression: parseable('NEXT'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');

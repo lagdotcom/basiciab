@@ -33,3 +33,25 @@ export const OP = (left: Token, op: BinaryOp, right: Token): BinaryToken => ({
 	op,
 	args: [left, right],
 });
+
+export const simpleProgramLines = [
+	'10 t = 0 : LET a = 2',
+	'20 FOR x = ABS(a - 1) TO 5 STEP 3',
+	'30 t = t + x',
+	'40 NEXT',
+];
+export const simpleProgramParsed = [
+	LINE(10, ST('let-implicit', VAR('t'), NUM(0)), ST('let', VAR('a'), NUM(2))),
+	LINE(
+		20,
+		ST(
+			'for-step',
+			VAR('x'),
+			FN('ABS', OP(VAR('a'), '-', NUM(1))),
+			NUM(5),
+			NUM(3)
+		)
+	),
+	LINE(30, ST('let-implicit', VAR('t'), OP(VAR('t'), '+', VAR('x')))),
+	LINE(40, ST('next-implicit')),
+];

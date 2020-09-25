@@ -1,3 +1,4 @@
+import { parseable } from '../parsing';
 import r from '../rendering';
 import System, { SystemState } from '../System';
 import Keyword from '../types/Keyword';
@@ -27,6 +28,7 @@ function doFor(
 type ForArgs = [v: VariableToken, init: Token, end: Token];
 export const For: Keyword = {
 	name: 'for',
+	expression: parseable('FOR {var} = {expr} TO {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');
@@ -48,6 +50,7 @@ export const For: Keyword = {
 type ForStepArgs = [v: VariableToken, init: Token, end: Token, step: Token];
 export const ForStep: Keyword = {
 	name: 'for-step',
+	expression: parseable('FOR {var} = {expr} TO {expr} STEP {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');

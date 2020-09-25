@@ -1,3 +1,4 @@
+import { parseable } from '../parsing';
 import r from '../rendering';
 import System from '../System';
 import Keyword from '../types/Keyword';
@@ -14,6 +15,7 @@ function execute(sys: System, s: Statement) {
 
 export const Let: Keyword = {
 	name: 'let',
+	expression: parseable('LET {var} = {expr}'),
 	execute,
 	render(s: Statement) {
 		const [v, expr] = s.args as LetArgs;
@@ -23,6 +25,7 @@ export const Let: Keyword = {
 
 export const LetImplicit: Keyword = {
 	name: 'let-implicit',
+	expression: parseable('{var} = {expr}'),
 	execute,
 	render(s: Statement) {
 		const [v, expr] = s.args as LetArgs;
