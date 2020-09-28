@@ -115,6 +115,29 @@ class Parser {
 		this.pos = old;
 	}
 
+	tryString() {
+		this.eatSpaces();
+
+		if (this.value[this.pos] === '"') {
+			const old = this.pos;
+			var str = '';
+			this.pos++;
+
+			while (this.value[this.pos] !== '"') {
+				str += this.value[this.pos];
+				this.pos++;
+
+				if (this.atEnd) {
+					this.pos = old;
+					return;
+				}
+			}
+
+			this.pos++;
+			return str;
+		}
+	}
+
 	trySeparator() {
 		this.eatSpaces();
 
@@ -185,6 +208,13 @@ class Parser {
 			const num = this.tryNumber();
 			if (typeof num === 'number') {
 				tokens.push({ type: 'number', value: num });
+				if (!checkBinary()) break;
+				continue;
+			}
+
+			const str = this.tryString();
+			if (typeof str === 'string') {
+				tokens.push({ type: 'string', value: str });
 				if (!checkBinary()) break;
 				continue;
 			}
@@ -285,25 +315,14 @@ function tryKeyword(p: Parser, k: Keyword): Statement | undefined {
 }
 
 function tryParse(p: Parser) {
-	var letImplicit;
-	var letImplicitPos;
-
 	p.save();
 	for (var keyword in Keywords) {
 		p.restore();
 		const statement = tryKeyword(p, Keywords[keyword]);
 
 		if (statement) {
-			if (keyword === 'let-implicit') {
-				letImplicit = statement;
-				letImplicitPos = p.pos;
-			} else return statement;
+			return statement;
 		}
-	}
-
-	if (letImplicitPos) {
-		p.pos = letImplicitPos;
-		return letImplicit;
 	}
 }
 

@@ -92,7 +92,7 @@ export default class System {
 										const p = parse(inp);
 										console.log(p);
 										if (p.label !== null) {
-											this.program.lines[p.label] = p;
+											this.add(p);
 											this.buffer = `${p.label + this.increment.value} `;
 											this.display.write(this.buffer);
 										} else {
@@ -131,7 +131,7 @@ export default class System {
 				return this.op(t);
 
 			case 'fn':
-				const fn = Fns[t.name];
+				const fn = Fns[t.name.toUpperCase()];
 				if (!fn) throw new Error(`Undeclared function: ${t.name}`);
 				return fn.evaluate(this, t.args);
 		}
