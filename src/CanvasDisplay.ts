@@ -1,8 +1,9 @@
 import Palette, { Black, DarkGrey, LightGrey } from './Palette';
 import System from './System';
+import Display from './types/Display';
 import { Var } from './Vars';
 
-export default class CanvasDisplay {
+export default class CanvasDisplay implements Display {
 	bg!: Var<number>;
 	border!: Var<number>;
 	cols!: Var<number>;
@@ -23,6 +24,7 @@ export default class CanvasDisplay {
 		const outer = outerCanvas.getContext('2d');
 		if (!outer) throw new Error('Could not get outer canvas context');
 		this.outer = outer;
+		outer.imageSmoothingEnabled = false;
 
 		const outerResize = () => {
 			const { clientWidth, clientHeight } = outerCanvas;
@@ -69,6 +71,7 @@ export default class CanvasDisplay {
 		inner.font = '8px monospace';
 		inner.fillStyle = Palette[this.bg.value];
 		inner.fillRect(0, 0, width, height);
+		inner.imageSmoothingEnabled = false;
 		this.cx.value = 0;
 		this.cy.value = 0;
 
@@ -139,6 +142,16 @@ export default class CanvasDisplay {
 
 			inner.fillStyle = Palette[bg.value];
 			inner.fillRect(0, sh, sw, tileHeight);
+		}
+	}
+
+	bs() {
+		const { cx } = this;
+
+		if (cx.value > 0) {
+			cx.value--;
+			this.write(' ');
+			cx.value--;
 		}
 	}
 }

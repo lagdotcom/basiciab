@@ -7,4 +7,5 @@ body {
 #basiciab {
 	width: 100%;
 	height: 100vh;
+	image-rendering: pixelated;
 }

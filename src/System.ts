@@ -1,11 +1,14 @@
 import Clause from './types/Clause';
 import Token, { BinaryToken } from './types/Token';
-import Vars from './Vars';
+import Vars, { Var } from './Vars';
 import Fns from './Fns';
 import Display from './types/Display';
 import Program from './types/Program';
 import Line from './types/Line';
 import Keywords from './Keywords';
+import Statement from './types/Statement';
+import Input from './types/Input';
+import parse from './parsing';
 
 export enum SystemState {
 	Interpret,
@@ -13,6 +16,8 @@ export enum SystemState {
 }
 
 export default class System {
+	buffer: string;
+	increment: Var<number>;
 	line: number;
 	program: Program;
 	raf?: number;
@@ -21,8 +26,9 @@ export default class System {
 	statement: number;
 	vars: Vars;
 
-	constructor(public display: Display) {
+	constructor(public display: Display, public input: Input) {
 		this.vars = new Vars();
+		this.increment = this.vars.add('__increment', { value: 10 });
 		this.vars.add('__version$', {
 			value: '',
 			get() {
@@ -31,6 +37,7 @@ export default class System {
 		});
 
 		display.attach(this);
+		this.buffer = '';
 		this.line = 0;
 		this.program = { name: 'unnamed', lines: [] };
 		this.stack = [];
@@ -40,14 +47,14 @@ export default class System {
 		this.tick = this.tick.bind(this);
 	}
 
-	get currentline() {
+	get currentLine() {
 		const line = this.program.lines.find(l => l.label === this.line);
 		if (!line) throw new Error(`Unknown label: ${this.line}`);
 		return line;
 	}
 
-	get currentstatement() {
-		return this.currentline.statements[this.statement];
+	get currentStatement() {
+		return this.currentLine.statements[this.statement];
 	}
 
 	get topclause() {
@@ -60,6 +67,49 @@ export default class System {
 	}
 
 	tick(t: number) {
+		if (this.state === SystemState.Interpret) {
+			this.input.events.splice(0).forEach(e => {
+				switch (e.type) {
+					case 'key':
+						this.buffer += e.key;
+						this.display.write(e.key);
+						break;
+
+					case 'back':
+						this.buffer = this.buffer.substr(0, this.buffer.length - 1);
+						this.display.bs();
+						break;
+
+					case 'meta':
+						switch (e.key) {
+							case 'Enter':
+								const inp = this.buffer.trim();
+								this.buffer = '';
+								this.display.nl();
+
+								if (inp) {
+									try {
+										const p = parse(inp);
+										console.log(p);
+										if (p.label !== null) {
+											this.program.lines[p.label] = p;
+											this.buffer = `${p.label + this.increment.value} `;
+											this.display.write(this.buffer);
+										} else {
+											this.runStatement(p);
+										}
+									} catch (err) {
+										this.display.write((err as Error).message);
+										this.display.nl();
+									}
+								}
+								break;
+						}
+						break;
+				}
+			});
+		}
+
 		this.display.update();
 
 		this.raf = requestAnimationFrame(this.tick);
@@ -134,7 +184,7 @@ export default class System {
 			}
 		});
 
-		this.program.lines.sort((a, b) => a.label - b.label);
+		if (needSort) this.program.lines.sort((a, b) => a.label - b.label);
 	}
 
 	run(start?: number) {
@@ -147,12 +197,11 @@ export default class System {
 		this.line = start;
 		this.statement = 0;
 		while (this.state == SystemState.Execute) {
-			const statement = this.currentstatement;
-			Keywords[statement.keyword].execute(this, statement);
+			this.runStatement(this.currentStatement);
 
 			this.statement++;
-			if (this.statement == this.currentline.statements.length) {
-				const i = this.program.lines.indexOf(this.currentline);
+			if (this.statement == this.currentLine.statements.length) {
+				const i = this.program.lines.indexOf(this.currentLine);
 				if (i == this.program.lines.length - 1) {
 					// TODO: message?
 					this.state = SystemState.Interpret;
@@ -165,5 +214,9 @@ export default class System {
 		}
 
 		// TODO: message?
+	}
+
+	runStatement(st: Statement) {
+		Keywords[st.keyword].execute(this, st);
 	}
 }

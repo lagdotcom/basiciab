@@ -1,3 +1,5 @@
+import Display from './types/Display';
+import Input from './types/Input';
 import Line from './types/Line';
 import Statement from './types/Statement';
 import Token, {
@@ -14,6 +16,7 @@ export const LINE = (label: number, ...statements: Statement[]): Line => ({
 	statements,
 });
 export const ST = (keyword: string, ...args: Token[]): Statement => ({
+	label: null,
 	keyword,
 	args,
 });
@@ -55,3 +58,12 @@ export const simpleProgramParsed = [
 	LINE(30, ST('let-implicit', VAR('t'), OP(VAR('t'), '+', VAR('x')))),
 	LINE(40, ST('next-implicit')),
 ];
+
+export const DummyDisplay: Display = {
+	attach() {},
+	bs() {},
+	nl() {},
+	update() {},
+	write() {},
+};
+export const DummyInput: Input = { events: [] };

@@ -281,7 +281,7 @@ function tryKeyword(p: Parser, k: Keyword): Statement | undefined {
 		//throw new Error(`Invalid pattern type: ${pat.type}`);
 	}
 
-	return { keyword: k.name, args };
+	return { label: null, keyword: k.name, args };
 }
 
 function tryParse(p: Parser) {
@@ -311,6 +311,7 @@ export default function parse(s: string) {
 	const p = new Parser(s);
 	const label = p.tryNumber();
 	const statements: Statement[] = [];
+	var lastpos = p.pos;
 
 	while (!p.atEnd) {
 		if (statements.length) {
@@ -322,6 +323,11 @@ export default function parse(s: string) {
 		if (!statement) throw new Error(`Could not parse: ${p.remainder}`);
 
 		statements.push(statement);
+
+		if (p.pos === lastpos) {
+			throw new Error('Parsing halted');
+		}
+		lastpos = p.pos;
 	}
 
 	if (label) {
