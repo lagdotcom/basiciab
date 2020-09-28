@@ -47,14 +47,14 @@ export default class CanvasDisplay implements Display {
 			this.needsResize = true;
 		};
 
-		this.rows = sys.vars.add('__rows', { value: 40, set });
-		this.cols = sys.vars.add('__cols', { value: 50, set });
+		this.rows = sys.vars.add('__rows', { value: 40, system: true, set });
+		this.cols = sys.vars.add('__cols', { value: 50, system: true, set });
 
-		this.fg = sys.vars.add('__fg', { value: LightGrey });
-		this.bg = sys.vars.add('__bg', { value: Black });
-		this.border = sys.vars.add('__border', { value: DarkGrey });
-		this.cx = sys.vars.add('__cx', { value: 0 });
-		this.cy = sys.vars.add('__cy', { value: 0 });
+		this.fg = sys.vars.add('__fg', { value: LightGrey, system: true });
+		this.bg = sys.vars.add('__bg', { value: Black, system: true });
+		this.border = sys.vars.add('__border', { value: DarkGrey, system: true });
+		this.cx = sys.vars.add('__cx', { value: 0, system: true });
+		this.cy = sys.vars.add('__cy', { value: 0, system: true });
 		this.resize();
 	}
 

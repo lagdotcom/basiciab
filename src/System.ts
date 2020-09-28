@@ -28,17 +28,19 @@ export default class System {
 
 	constructor(public display: Display, public input: Input) {
 		this.vars = new Vars();
-		this.increment = this.vars.add('__increment', { value: 10 });
+		this.increment = this.vars.add('__increment', { value: 10, system: true });
 		this.vars.add('pi', {
 			value: 0,
+			system: true,
 			get() {
 				return Math.PI;
 			},
 		});
 		this.vars.add('__version$', {
 			value: '',
+			system: true,
 			get() {
-				return '0.1.0';
+				return '0.1.1';
 			},
 		});
 
@@ -114,6 +116,8 @@ export default class System {
 						break;
 				}
 			});
+		} else {
+			this.runCurrentStatement();
 		}
 
 		this.display.update();
@@ -194,32 +198,41 @@ export default class System {
 	}
 
 	run(start?: number) {
-		// TODO: this doesn't work with raf
-
 		if (!this.program.lines.length) throw new Error('No lines in program');
 		if (typeof start === 'undefined') start = this.program.lines[0].label;
 
 		this.state = SystemState.Execute;
 		this.line = start;
 		this.statement = 0;
-		while (this.state == SystemState.Execute) {
-			this.runStatement(this.currentStatement);
+	}
 
-			this.statement++;
-			if (this.statement == this.currentLine.statements.length) {
-				const i = this.program.lines.indexOf(this.currentLine);
-				if (i == this.program.lines.length - 1) {
-					// TODO: message?
-					this.state = SystemState.Interpret;
-					return;
-				} else {
-					this.line = this.program.lines[i + 1].label;
-					this.statement = 0;
-				}
-			}
-		}
+	runToEnd(start?: number) {
+		if (!this.program.lines.length) throw new Error('No lines in program');
+		if (typeof start === 'undefined') start = this.program.lines[0].label;
+
+		this.state = SystemState.Execute;
+		this.line = start;
+		this.statement = 0;
+		while (this.state == SystemState.Execute) this.runCurrentStatement();
 
 		// TODO: message?
+	}
+
+	runCurrentStatement() {
+		this.runStatement(this.currentStatement);
+
+		this.statement++;
+		if (this.statement == this.currentLine.statements.length) {
+			const i = this.program.lines.indexOf(this.currentLine);
+			if (i == this.program.lines.length - 1) {
+				// TODO: message?
+				this.state = SystemState.Interpret;
+				return;
+			} else {
+				this.line = this.program.lines[i + 1].label;
+				this.statement = 0;
+			}
+		}
 	}
 
 	runStatement(st: Statement) {
