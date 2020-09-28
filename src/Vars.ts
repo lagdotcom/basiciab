@@ -1,5 +1,6 @@
 export interface Var<T> {
 	value: T;
+	system?: boolean;
 	get?: (v: Var<T>) => T;
 	set?: (v: Var<T>, value: T) => void;
 }
@@ -9,6 +10,12 @@ export default class Vars {
 
 	constructor() {
 		this.vars = {};
+	}
+
+	clear() {
+		for (var name in this.vars) {
+			if (!this.vars[name].system) delete this.vars[name];
+		}
 	}
 
 	has(name: string) {

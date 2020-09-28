@@ -29,7 +29,7 @@ describe('system', () => {
 		const s = new System(DummyDisplay, DummyInput);
 		s.add(...simpleProgramParsed);
 
-		s.run();
+		s.runToEnd();
 		assert.equal(s.vars.get('x'), 7);
 		assert.equal(s.vars.get('t'), 5);
 	});
