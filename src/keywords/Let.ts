@@ -9,8 +9,16 @@ type LetArgs = [v: VariableToken, expr: Token];
 
 function execute(sys: System, s: Statement) {
 	const [v, expr] = s.args as LetArgs;
-	if (sys.vars.has(v.name)) sys.vars.set(v.name, sys.evaluate(expr));
-	else sys.vars.add(v.name, { value: sys.evaluate(expr) });
+	const value = sys.evaluate(expr);
+
+	if (v.name.substr(-1) === '$') {
+		if (typeof value !== 'string')
+			throw new Error('Cannot store number in string variable');
+	} else if (typeof value === 'string')
+		throw new Error('Cannot store string in number variable');
+
+	if (sys.vars.has(v.name)) sys.vars.set(v.name, value);
+	else sys.vars.add(v.name, { value });
 }
 
 export const Let: Keyword = {
