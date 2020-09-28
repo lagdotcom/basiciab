@@ -77,6 +77,17 @@ export const Rnd: Fn = {
 	},
 };
 
+export const Sgn: Fn = {
+	name: 'sgn',
+	evaluate(sys: System, args: Token[]) {
+		if (args.length !== 1) throw new Error(`SGN takes 1 argument`);
+		const value = sys.evaluate(args[0]);
+		if (typeof value === 'string') throw new Error(`SGN only uses numbers`);
+
+		return value == 0 ? 0 : value < 0 ? -1 : 1;
+	},
+};
+
 export const Sin: Fn = {
 	name: 'sin',
 	evaluate(sys: System, args: Token[]) {

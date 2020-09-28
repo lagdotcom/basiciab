@@ -1,4 +1,5 @@
-import { Asc, Chr } from './functions/conversion';
+import { Asc, Chr, Len, Val } from './functions/conversion';
+import { Pos } from './functions/display';
 import {
 	Abs,
 	Atn,
@@ -7,6 +8,7 @@ import {
 	Int,
 	Log,
 	Rnd,
+	Sgn,
 	Sin,
 	Sqr,
 	Tan,
@@ -15,7 +17,24 @@ import { Fn } from './types/Fn';
 
 const Fns: { [name: string]: Fn } = {};
 
-[Abs, Asc, Atn, Chr, Cos, Exp, Int, Log, Rnd, Sin, Sqr, Tan].forEach(f => {
+[
+	Abs,
+	Asc,
+	Atn,
+	Chr,
+	Cos,
+	Exp,
+	Int,
+	Len,
+	Log,
+	Pos,
+	Rnd,
+	Sgn,
+	Sin,
+	Sqr,
+	Tan,
+	Val,
+].forEach(f => {
 	Fns[f.name.toUpperCase()] = f;
 });
 

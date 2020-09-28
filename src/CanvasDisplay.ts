@@ -37,6 +37,10 @@ export default class CanvasDisplay implements Display {
 		outerResize();
 	}
 
+	get pos() {
+		return this.cx.value;
+	}
+
 	attach(sys: System) {
 		const set = (v: Var<number>, value: number) => {
 			v.value = value;

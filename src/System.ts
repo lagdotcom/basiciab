@@ -29,6 +29,12 @@ export default class System {
 	constructor(public display: Display, public input: Input) {
 		this.vars = new Vars();
 		this.increment = this.vars.add('__increment', { value: 10 });
+		this.vars.add('pi', {
+			value: 0,
+			get() {
+				return Math.PI;
+			},
+		});
 		this.vars.add('__version$', {
 			value: '',
 			get() {
