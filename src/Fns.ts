@@ -1,4 +1,4 @@
-import { Asc, Chr, Len, Val } from './functions/conversion';
+import { Asc, Chr, Left, Len, Mid, Right, Str, Val } from './functions/string';
 import { Pos } from './functions/display';
 import {
 	Abs,
@@ -25,13 +25,17 @@ const Fns: { [name: string]: Fn } = {};
 	Cos,
 	Exp,
 	Int,
+	Left,
 	Len,
 	Log,
+	Mid,
 	Pos,
+	Right,
 	Rnd,
 	Sgn,
 	Sin,
 	Sqr,
+	Str,
 	Tan,
 	Val,
 ].forEach(f => {
