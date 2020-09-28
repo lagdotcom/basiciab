@@ -158,4 +158,11 @@ export default class CanvasDisplay implements Display {
 			cx.value--;
 		}
 	}
+
+	line(x1: number, y1: number, x2: number, y2: number) {
+		this.inner.strokeStyle = Palette[this.fg.value];
+		this.inner.moveTo(x1, y1);
+		this.inner.lineTo(x2, y2);
+		this.inner.stroke();
+	}
 }

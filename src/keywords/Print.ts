@@ -6,6 +6,7 @@ import Statement from '../types/Statement';
 
 export const Print: Keyword = {
 	name: 'print',
+	visible: 'PRINT',
 	// TODO: 0-many arguments
 	expression: parseable('PRINT {expr}'),
 	execute(sys: System, s: Statement) {

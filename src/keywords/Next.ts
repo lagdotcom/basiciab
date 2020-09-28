@@ -22,6 +22,7 @@ function doNext(sys: System, clause: ForClause) {
 type NextArgs = [v: VariableToken];
 export const Next: Keyword = {
 	name: 'next',
+	visible: 'NEXT',
 	expression: parseable('NEXT {var}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)

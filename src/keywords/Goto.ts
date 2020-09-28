@@ -8,6 +8,7 @@ import Token from '../types/Token';
 type GotoArgs = [expr: Token];
 export const Goto: Keyword = {
 	name: 'goto',
+	visible: 'GOTO',
 	expression: parseable('GOTO {expr}'),
 	execute(sys: System, s: Statement) {
 		const [expr] = s.args as GotoArgs;

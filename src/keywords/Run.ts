@@ -7,6 +7,7 @@ import Token from '../types/Token';
 
 export const Run: Keyword = {
 	name: 'run',
+	visible: 'RUN',
 	expression: parseable('RUN'),
 	execute(sys: System) {
 		sys.run();

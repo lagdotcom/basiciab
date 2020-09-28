@@ -62,6 +62,7 @@ export const simpleProgramParsed = [
 export const DummyDisplay: Display = {
 	attach() {},
 	bs() {},
+	line() {},
 	nl() {},
 	update() {},
 	write() {},

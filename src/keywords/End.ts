@@ -4,6 +4,7 @@ import Keyword from '../types/Keyword';
 
 export const End: Keyword = {
 	name: 'end',
+	visible: 'END',
 	expression: parseable('END'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)

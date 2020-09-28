@@ -15,6 +15,7 @@ function execute(sys: System, s: Statement) {
 
 export const Let: Keyword = {
 	name: 'let',
+	visible: 'LET',
 	expression: parseable('LET {var} = {expr}'),
 	execute,
 	render(s: Statement) {

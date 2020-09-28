@@ -28,6 +28,7 @@ function doFor(
 type ForArgs = [v: VariableToken, init: Token, end: Token];
 export const For: Keyword = {
 	name: 'for',
+	visible: 'FOR',
 	expression: parseable('FOR {var} = {expr} TO {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
