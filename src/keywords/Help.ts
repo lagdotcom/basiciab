@@ -9,19 +9,16 @@ export const Help: Keyword = {
 	visible: 'HELP',
 	expression: parseable('HELP'),
 	execute(sys: System) {
-		sys.display.write(`BASIC in a Browser v${sys.vars.get('__version$')}`);
-		sys.display.nl();
+		sys.display.writenl(`BASIC in a Browser v${sys.vars.get('__version$')}`);
 
-		sys.display.write(
+		sys.display.writenl(
 			`Commands: ${Object.values(Keywords)
 				.filter(k => k.visible)
 				.map(k => k.visible)
 				.join(' ')}`
 		);
-		sys.display.nl();
 
-		sys.display.write(`Functions: ${Object.keys(Fns).join(' ')}`);
-		sys.display.nl();
+		sys.display.writenl(`Functions: ${Object.keys(Fns).join(' ')}`);
 	},
 	render() {
 		return 'HELP';

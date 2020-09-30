@@ -9,8 +9,7 @@ export const List: Keyword = {
 	expression: parseable('LIST'),
 	execute(sys: System) {
 		sys.program.lines.forEach(l => {
-			sys.display.write(renderLine(l));
-			sys.display.nl();
+			sys.display.writenl(renderLine(l));
 		});
 	},
 	render() {

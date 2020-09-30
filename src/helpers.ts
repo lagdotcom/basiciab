@@ -66,6 +66,7 @@ export const DummyDisplay: Display = {
 	nl() {},
 	update() {},
 	write() {},
+	writenl() {},
 	pos: 0,
 };
 export const DummyInput: Input = { events: [] };

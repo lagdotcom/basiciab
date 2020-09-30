@@ -19,6 +19,7 @@ const metaKeys = [
 	'NumLock',
 	'PageDown',
 	'PageUp',
+	'Pause',
 	'Shift',
 ];
 
@@ -32,10 +33,12 @@ export default class DocumentInput implements Input {
 	}
 
 	keypress(e: KeyboardEvent) {
-		if (e.key === 'Backspace') this.events.push({ type: 'back' });
-		else if (metaKeys.includes(e.key))
-			this.events.push({ type: 'meta', key: e.key });
-		else this.events.push({ type: 'key', key: e.key });
+		const key = e.key;
+
+		if (key === 'Backspace') this.events.push({ type: 'back', key });
+		else if (key === 'Pause') this.events.push({ type: 'break', key });
+		else if (metaKeys.includes(key)) this.events.push({ type: 'meta', key });
+		else this.events.push({ type: 'key', key });
 
 		e.preventDefault();
 	}

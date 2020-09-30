@@ -8,4 +8,5 @@ export default interface Display {
 	pos: number;
 	update(): void;
 	write(s: string): void;
+	writenl(s: string): void;
 }

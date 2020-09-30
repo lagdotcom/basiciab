@@ -46,6 +46,14 @@ export default class System {
 				return '0.1.1';
 			},
 		});
+		this.vars.add('inkey$', {
+			value: '',
+			system: true,
+			get: () => {
+				const e = this.input.events.shift();
+				return e ? e.key : '';
+			},
+		});
 
 		display.attach(this);
 		this.buffer = '';
@@ -114,8 +122,7 @@ export default class System {
 											this.runStatement(p);
 										}
 									} catch (err) {
-										this.display.write((err as Error).message);
-										this.display.nl();
+										this.display.writenl((err as Error).message);
 									}
 								}
 								break;
@@ -125,6 +132,14 @@ export default class System {
 			});
 		} else {
 			for (var i = 0; i < this.speed.value; i++) {
+				// allow breaking out of infinite loops
+				if (this.input.events.find(e => e.type === 'break')) {
+					this.display.writenl(`BREAK at ${this.line},${this.statement}`);
+					this.input.events.splice(0, this.input.events.length);
+					this.state = SystemState.Interpret;
+					break;
+				}
+
 				this.runCurrentStatement();
 				if (this.state !== SystemState.Execute) break;
 			}
