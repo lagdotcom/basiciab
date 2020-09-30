@@ -156,7 +156,7 @@ export default class System {
 				return fn.evaluate(this, t.args);
 		}
 
-		//throw new Error(`Unknown token type: ${t.type}`);
+		throw new Error(`Unknown token type: ${t}`);
 	}
 
 	op(t: BinaryToken): string | number {

@@ -29,6 +29,7 @@ export const If: Keyword = {
 
 export const Else: Keyword = {
 	name: 'else',
+	visible: 'else',
 	expression: parseable('ELSE'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
@@ -47,6 +48,7 @@ export const Else: Keyword = {
 
 export const EndIf: Keyword = {
 	name: 'endif',
+	visible: 'endif',
 	expression: parseable('ENDIF'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)

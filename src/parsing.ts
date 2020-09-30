@@ -380,12 +380,10 @@ function tryKeyword(p: Parser, k: Keyword): Statement | undefined {
 function tryParse(p: Parser) {
 	p.save();
 	for (var keyword in Keywords) {
-		p.restore();
 		const statement = tryKeyword(p, Keywords[keyword]);
 
-		if (statement) {
-			return statement;
-		}
+		if (statement) return statement;
+		p.restore();
 	}
 }
 

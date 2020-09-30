@@ -7,5 +7,11 @@ export interface ForClause {
 	step: number;
 }
 
-type Clause = ForClause;
+export interface WhileClause {
+	type: 'while';
+	line: number;
+	statement: number;
+}
+
+type Clause = ForClause | WhileClause;
 export default Clause;
