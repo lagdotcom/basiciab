@@ -121,7 +121,7 @@ export default class CanvasDisplay implements Display {
 
 	writenl(s: string) {
 		this.write(s);
-		this.nl();
+		if (this.cx.value != 0) this.nl();
 	}
 
 	write(s: string) {

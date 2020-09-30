@@ -5,7 +5,7 @@ import Keyword from '../types/Keyword';
 
 export const List: Keyword = {
 	name: 'list',
-	visible: 'list',
+	visible: 'LIST',
 	expression: parseable('LIST'),
 	execute(sys: System) {
 		sys.program.lines.forEach(l => {

@@ -6,7 +6,7 @@ import Statement from '../types/Statement';
 
 export const While: Keyword = {
 	name: 'while',
-	visible: 'while',
+	visible: 'WHILE',
 	expression: parseable('WHILE {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
@@ -30,7 +30,7 @@ export const While: Keyword = {
 
 export const Wend: Keyword = {
 	name: 'wend',
-	visible: 'wend',
+	visible: 'WEND',
 	expression: parseable('WEND'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)

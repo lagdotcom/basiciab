@@ -7,7 +7,7 @@ import Token, { NumberToken } from '../types/Token';
 
 export const If: Keyword = {
 	name: 'if',
-	visible: 'if',
+	visible: 'IF',
 	expression: parseable('IF {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
@@ -29,7 +29,7 @@ export const If: Keyword = {
 
 export const Else: Keyword = {
 	name: 'else',
-	visible: 'else',
+	visible: 'ELSE',
 	expression: parseable('ELSE'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
@@ -48,7 +48,7 @@ export const Else: Keyword = {
 
 export const EndIf: Keyword = {
 	name: 'endif',
-	visible: 'endif',
+	visible: 'ENDIF',
 	expression: parseable('ENDIF'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)

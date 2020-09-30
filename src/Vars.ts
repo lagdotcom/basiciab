@@ -27,6 +27,20 @@ export default class Vars {
 		return v;
 	}
 
+	constant<T>(name: string, value: T) {
+		this.vars[name] = {
+			value,
+			system: true,
+			get() {
+				return value;
+			},
+			set() {
+				throw new Error(`${name} is constant`);
+			},
+		};
+		return this.vars[name];
+	}
+
 	get<T>(name: string) {
 		const v = this.vars[name.toLowerCase()] as Var<T>;
 		if (!v) throw new Error(`Undefined var: ${name}`);

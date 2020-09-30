@@ -32,20 +32,8 @@ export default class System {
 		this.vars = new Vars();
 		this.increment = this.vars.add('__increment', { value: 10, system: true });
 		this.speed = this.vars.add('__speed', { value: 2 });
-		this.vars.add('pi', {
-			value: 0,
-			system: true,
-			get() {
-				return Math.PI;
-			},
-		});
-		this.vars.add('__version$', {
-			value: '',
-			system: true,
-			get() {
-				return '0.1.1';
-			},
-		});
+		this.vars.constant('pi', Math.PI);
+		this.vars.constant('__version$', '0.1.2');
 		this.vars.add('inkey$', {
 			value: '',
 			system: true,

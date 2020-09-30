@@ -40,5 +40,6 @@ const Keywords: { [name: string]: Keyword } = {};
 ].forEach(k => {
 	Keywords[k.name] = k;
 });
+(window as any).Keywords = Keywords;
 
 export default Keywords;
