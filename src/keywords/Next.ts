@@ -26,7 +26,7 @@ export const Next: Keyword = {
 	expression: parseable('NEXT {var}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
-			throw new Error('FOR only in programs');
+			throw new Error('NEXT only in programs');
 
 		const [v] = s.args as NextArgs;
 		const clause = sys.topclause;

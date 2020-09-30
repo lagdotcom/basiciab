@@ -13,7 +13,18 @@ export interface VariableToken {
 	name: string;
 }
 
-export type BinaryOp = '+' | '-' | '*' | '/';
+export type BinaryOp =
+	| '+'
+	| '-'
+	| '*'
+	| '/'
+	| '>'
+	| '<'
+	| '>='
+	| '<='
+	| '='
+	| '<>'
+	| '!=';
 
 export interface BinaryToken {
 	type: 'binary';

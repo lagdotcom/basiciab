@@ -1,6 +1,7 @@
 import { parseable } from '../parsing';
 import r from '../rendering';
 import System, { SystemState } from '../System';
+import { isNum } from '../tools';
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
 import Token, { VariableToken } from '../types/Token';
@@ -37,8 +38,7 @@ export const For: Keyword = {
 		const [v, ainit, aend] = s.args as ForArgs;
 		const init = sys.evaluate(ainit);
 		const end = sys.evaluate(aend);
-		if (typeof init === 'string' || typeof end === 'string')
-			throw new Error('FOR only uses numbers');
+		if (!isNum(init) || !isNum(end)) throw new Error('FOR only uses numbers');
 
 		doFor(sys, v.name, init, end, 1);
 	},
@@ -60,11 +60,7 @@ export const ForStep: Keyword = {
 		const init = sys.evaluate(ainit);
 		const end = sys.evaluate(aend);
 		const step = sys.evaluate(astep);
-		if (
-			typeof init === 'string' ||
-			typeof end === 'string' ||
-			typeof step === 'string'
-		)
+		if (!isNum(init) || !isNum(end) || !isNum(step))
 			throw new Error('FOR only uses numbers');
 
 		doFor(sys, v.name, init, end, step);

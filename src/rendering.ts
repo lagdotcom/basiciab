@@ -4,10 +4,17 @@ import Statement from './types/Statement';
 import Token, { BinaryOp } from './types/Token';
 
 const precedence: { [op in BinaryOp]: number } = {
-	'+': 1,
-	'-': 1,
-	'*': 2,
-	'/': 2,
+	'=': 1,
+	'<>': 1,
+	'!=': 1,
+	'>': 1,
+	'<': 1,
+	'>=': 1,
+	'<=': 1,
+	'+': 10,
+	'-': 10,
+	'*': 20,
+	'/': 20,
 };
 
 export default function render(t: Token, parent: number = 0): string {

@@ -1,6 +1,7 @@
 import { parseable } from '../parsing';
 import r from '../rendering';
 import System from '../System';
+import { isNum } from '../tools';
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
 import Token from '../types/Token';
@@ -23,10 +24,10 @@ export const RunLine: Keyword = {
 	expression: parseable('RUN {expr}'),
 	execute(sys: System, s: Statement) {
 		const [expr] = s.args as RunLineArgs;
-		const line = sys.evaluate(expr);
-		if (typeof line === 'string') throw new Error('RUN only uses numbers');
+		const label = sys.evaluate(expr);
+		if (!isNum(label)) throw new Error('RUN only uses numbers');
 
-		sys.run(line);
+		sys.run(label);
 	},
 	render(s: Statement) {
 		return `RUN ${r(s.args[0])}`;

@@ -1,4 +1,5 @@
 import Keywords from './Keywords';
+import { isNum, isStr } from './tools';
 import Keyword from './types/Keyword';
 import Line from './types/Line';
 import Statement from './types/Statement';
@@ -14,13 +15,21 @@ interface VariablePattern {
 interface ExpressionPattern {
 	type: 'expr';
 }
-type ParsingPattern = LiteralPattern | VariablePattern | ExpressionPattern;
+interface NumberPattern {
+	type: 'number';
+}
+type ParsingPattern =
+	| LiteralPattern
+	| VariablePattern
+	| ExpressionPattern
+	| NumberPattern;
 export type ParsingExpression = ParsingPattern[];
 
 export function parseable(s: string): ParsingExpression {
 	return s.split(' ').map(value => {
 		if (value == '{var}') return { type: 'var' };
 		if (value == '{expr}') return { type: 'expr' };
+		if (value == '{number}') return { type: 'number' };
 		return { type: 'literal', value };
 	});
 }
@@ -48,6 +57,10 @@ class Parser {
 
 	get remainder() {
 		return this.value.substr(this.pos);
+	}
+
+	get peek() {
+		return this.value.substr(this.pos, 1);
 	}
 
 	save() {
@@ -107,7 +120,7 @@ class Parser {
 		if (word) {
 			const n = parseInt(word, 10);
 			if (!isNaN(n)) {
-				//console.log('number', n);
+				this.log('found number:', n);
 				return n;
 			}
 		}
@@ -154,7 +167,7 @@ class Parser {
 		const word = this.nextWord();
 
 		if (word.toLowerCase() === match.toLowerCase()) {
-			//console.log('literal', word);
+			this.log('found literal:', word);
 			return word;
 		}
 
@@ -185,12 +198,12 @@ class Parser {
 		var fn: string | undefined;
 		const tokens: Token[] = [];
 
-		function checkBinary() {
+		const checkBinary = () => {
 			if (binary) {
 				const right = tokens.pop();
 				const left = tokens.pop();
 
-				//console.log('bin:', left, binary, right);
+				this.log('bin:', left, binary, right);
 				if (left && right) {
 					tokens.push({ type: 'binary', op: binary, args: [left, right] });
 					binary = undefined;
@@ -202,19 +215,21 @@ class Parser {
 			}
 
 			return true;
-		}
+		};
 
 		while (!this.atEnd) {
 			const num = this.tryNumber();
-			if (typeof num === 'number') {
+			if (isNum(num)) {
 				tokens.push({ type: 'number', value: num });
+				this.log('num:', num);
 				if (!checkBinary()) break;
 				continue;
 			}
 
 			const str = this.tryString();
-			if (typeof str === 'string') {
+			if (isStr(str)) {
 				tokens.push({ type: 'string', value: str });
+				this.log('str:', str);
 				if (!checkBinary()) break;
 				continue;
 			}
@@ -231,13 +246,49 @@ class Parser {
 				break;
 			}
 
+			// TODO: this kind of sucks, should probably make a real tokenizer
 			switch (name) {
 				case '+':
 				case '-':
 				case '*':
 				case '/':
+				case '<':
 					binary = name;
 					continue;
+
+				case '>':
+					if (binary === undefined) {
+						binary = '>';
+						continue;
+					}
+					if (binary === '<') {
+						binary = '<>';
+						continue;
+					}
+					break;
+
+				case '=':
+					if (binary === undefined) {
+						binary = '=';
+						continue;
+					}
+					if (binary === '<') {
+						binary = '<=';
+						continue;
+					}
+					if (binary === '>') {
+						binary = '>=';
+						continue;
+					}
+					break;
+
+				case '!':
+					if (this.peek === '=') {
+						binary = '!=';
+						this.pos++;
+						continue;
+					}
+					break;
 
 				case '(':
 					const top = tokens.pop();
@@ -250,7 +301,7 @@ class Parser {
 				case ')':
 					if (fn) {
 						const call: Token = { type: 'fn', name: fn, args: tokens.slice(0) };
-						//console.log('fn:', call);
+						this.log('fn:', call);
 						tokens.splice(0, tokens.length, call);
 						fn = undefined;
 						continue;
@@ -269,16 +320,22 @@ class Parser {
 		}
 
 		if (tokens.length === 1) {
-			//console.log('expr:', tokens[0]);
+			this.log('expr:', tokens[0]);
 			return tokens[0];
 		}
 
+		this.log('failed, tokens=', tokens);
 		this.pos = old;
+	}
+
+	log(...args: any[]) {
+		//console.log(`parse@${this.pos}`, ...args);
 	}
 }
 
 function tryKeyword(p: Parser, k: Keyword): Statement | undefined {
 	//console.log('tryKeyword', p.remainder, k.name);
+	p.log('trying keyword:', k.name);
 
 	const args: Token[] = [];
 	for (var i = 0; i < k.expression.length; i++) {
@@ -306,9 +363,15 @@ function tryKeyword(p: Parser, k: Keyword): Statement | undefined {
 				if (!name) return;
 				args.push({ type: 'variable', name });
 				continue;
+
+			case 'number':
+				const value = p.tryNumber();
+				if (!isNum(value)) return;
+				args.push({ type: 'number', value });
+				continue;
 		}
 
-		//throw new Error(`Invalid pattern type: ${pat.type}`);
+		throw new Error(`Invalid pattern type: ${pat}`);
 	}
 
 	return { label: null, keyword: k.name, args };

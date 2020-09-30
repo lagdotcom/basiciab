@@ -1,6 +1,7 @@
 import { parseable } from '../parsing';
 import r from '../rendering';
 import System from '../System';
+import { isNum, isStr } from '../tools';
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
 import Token, { VariableToken } from '../types/Token';
@@ -12,9 +13,9 @@ function execute(sys: System, s: Statement) {
 	const value = sys.evaluate(expr);
 
 	if (v.name.substr(-1) === '$') {
-		if (typeof value !== 'string')
+		if (!isStr(value))
 			throw new Error('Cannot store number in string variable');
-	} else if (typeof value === 'string')
+	} else if (!isNum(value))
 		throw new Error('Cannot store string in number variable');
 
 	if (sys.vars.has(v.name)) sys.vars.set(v.name, value);

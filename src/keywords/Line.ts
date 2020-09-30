@@ -1,6 +1,7 @@
 import { parseable } from '../parsing';
 import r from '../rendering';
 import System from '../System';
+import { isNum } from '../tools';
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
 import Token from '../types/Token';
@@ -18,12 +19,7 @@ export const Line: Keyword = {
 		const y1 = sys.evaluate(ty1);
 		const x2 = sys.evaluate(tx2);
 		const y2 = sys.evaluate(ty2);
-		if (
-			typeof x1 !== 'number' ||
-			typeof y1 !== 'number' ||
-			typeof x2 !== 'number' ||
-			typeof y2 !== 'number'
-		)
+		if (!isNum(x1) || !isNum(y1) || !isNum(x2) || !isNum(y2))
 			throw new Error('LINE only works with numbers');
 
 		sys.display.line(x1, y1, x2, y2);

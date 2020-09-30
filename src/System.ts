@@ -9,6 +9,7 @@ import Keywords from './Keywords';
 import Statement from './types/Statement';
 import Input from './types/Input';
 import parse from './parsing';
+import { asBool, isStr, isUndef } from './tools';
 
 export enum SystemState {
 	Interpret,
@@ -58,7 +59,7 @@ export default class System {
 	}
 
 	get currentLine() {
-		const line = this.program.lines.find(l => l.label === this.line);
+		const line = this.getLine(this.line);
 		if (!line) throw new Error(`Unknown label: ${this.line}`);
 		return line;
 	}
@@ -69,6 +70,10 @@ export default class System {
 
 	get topclause() {
 		if (this.stack.length) return this.stack[this.stack.length - 1];
+	}
+
+	getLine(label: number) {
+		return this.program.lines.find(l => l.label === label);
 	}
 
 	start() {
@@ -154,36 +159,54 @@ export default class System {
 		//throw new Error(`Unknown token type: ${t.type}`);
 	}
 
-	op(t: BinaryToken) {
+	op(t: BinaryToken): string | number {
 		const l = this.evaluate(t.args[0]);
 		const r = this.evaluate(t.args[1]);
 
 		switch (t.op) {
 			case '+':
-				if (typeof l === 'string') {
-					if (typeof r === 'string') return l + r;
+				if (isStr(l)) {
+					if (isStr(r)) return l + r;
 					return l + r.toString();
 				}
-				if (typeof r === 'string') return l.toString() + r;
+				if (isStr(r)) return l.toString() + r;
 				return l + r;
 
 			case '-':
-				if (typeof l === 'string' || typeof r === 'string')
-					throw new Error(`Cannot subtract strings`);
+				if (isStr(l) || isStr(r)) throw new Error(`Cannot subtract strings`);
 				return l - r;
 
 			case '*':
-				if (typeof l === 'string' || typeof r === 'string')
-					throw new Error(`Cannot multiply strings`);
+				if (isStr(l) || isStr(r)) throw new Error(`Cannot multiply strings`);
 				return l * r;
 
 			case '/':
-				if (typeof l === 'string' || typeof r === 'string')
-					throw new Error(`Cannot divide strings`);
+				if (isStr(l) || isStr(r)) throw new Error(`Cannot divide strings`);
 				return l / r;
-		}
 
-		throw new Error(`Unsupported binary op: ${t.op}`);
+			case '=':
+				return asBool(l == r);
+
+			case '!=':
+			case '<>':
+				return asBool(l != r);
+
+			case '>':
+				if (isStr(l) || isStr(r)) throw new Error('Cannot compare strings');
+				return asBool(l > r);
+
+			case '>=':
+				if (isStr(l) || isStr(r)) throw new Error('Cannot compare strings');
+				return asBool(l >= r);
+
+			case '<':
+				if (isStr(l) || isStr(r)) throw new Error('Cannot compare strings');
+				return asBool(l < r);
+
+			case '<=':
+				if (isStr(l) || isStr(r)) throw new Error('Cannot compare strings');
+				return asBool(l <= r);
+		}
 	}
 
 	add(...lines: Line[]) {
@@ -192,10 +215,16 @@ export default class System {
 		lines.forEach(nl => {
 			const i = this.program.lines.findIndex(l => l.label == nl.label);
 			if (i === -1) {
-				this.program.lines.push(nl);
-				needSort = true;
+				if (nl.statements.length) {
+					this.program.lines.push(nl);
+					needSort = true;
+				}
 			} else {
-				this.program.lines[i] = nl;
+				if (nl.statements.length) {
+					this.program.lines[i] = nl;
+				} else {
+					this.program.lines.splice(i, 1);
+				}
 			}
 		});
 
@@ -204,7 +233,7 @@ export default class System {
 
 	run(start?: number) {
 		if (!this.program.lines.length) throw new Error('No lines in program');
-		if (typeof start === 'undefined') start = this.program.lines[0].label;
+		if (isUndef(start)) start = this.program.lines[0].label;
 
 		this.state = SystemState.Execute;
 		this.line = start;
@@ -213,7 +242,7 @@ export default class System {
 
 	runToEnd(start?: number) {
 		if (!this.program.lines.length) throw new Error('No lines in program');
-		if (typeof start === 'undefined') start = this.program.lines[0].label;
+		if (isUndef(start)) start = this.program.lines[0].label;
 
 		this.state = SystemState.Execute;
 		this.line = start;
@@ -227,7 +256,7 @@ export default class System {
 		this.runStatement(this.currentStatement);
 
 		this.statement++;
-		if (this.statement == this.currentLine.statements.length) {
+		if (this.statement >= this.currentLine.statements.length) {
 			const i = this.program.lines.indexOf(this.currentLine);
 			if (i == this.program.lines.length - 1) {
 				// TODO: message?
@@ -242,5 +271,29 @@ export default class System {
 
 	runStatement(st: Statement) {
 		Keywords[st.keyword].execute(this, st);
+	}
+
+	scan(add: string[], sub: string[], score: number = 0) {
+		var { line, statement } = this;
+
+		while (true) {
+			const cline = this.getLine(line);
+			if (!cline) return;
+
+			const cstat = cline.statements[statement];
+			if (add.includes(cstat.keyword)) score++;
+			else if (sub.includes(cstat.keyword)) score--;
+
+			if (score <= 0) return cline.label;
+
+			statement++;
+			if (statement >= cline.statements.length) {
+				const i = this.program.lines.indexOf(cline);
+				if (i == this.program.lines.length - 1) return;
+
+				line = this.program.lines[i + 1].label;
+				statement = 0;
+			}
+		}
 	}
 }
