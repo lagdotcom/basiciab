@@ -21,6 +21,7 @@ export default class System {
 	line: number;
 	program: Program;
 	raf?: number;
+	speed: Var<number>;
 	stack: Clause[];
 	state: SystemState;
 	statement: number;
@@ -29,6 +30,7 @@ export default class System {
 	constructor(public display: Display, public input: Input) {
 		this.vars = new Vars();
 		this.increment = this.vars.add('__increment', { value: 10, system: true });
+		this.speed = this.vars.add('__speed', { value: 2 });
 		this.vars.add('pi', {
 			value: 0,
 			system: true,
@@ -117,7 +119,10 @@ export default class System {
 				}
 			});
 		} else {
-			this.runCurrentStatement();
+			for (var i = 0; i < this.speed.value; i++) {
+				this.runCurrentStatement();
+				if (this.state !== SystemState.Execute) break;
+			}
 		}
 
 		this.display.update();

@@ -47,8 +47,24 @@ export default class CanvasDisplay implements Display {
 			this.needsResize = true;
 		};
 
+		const me = this;
+
 		this.rows = sys.vars.add('__rows', { value: 40, system: true, set });
 		this.cols = sys.vars.add('__cols', { value: 50, system: true, set });
+		sys.vars.add('__width', {
+			value: 0,
+			system: true,
+			get() {
+				return me.cols.value * me.tileWidth;
+			},
+		});
+		sys.vars.add('__height', {
+			value: 0,
+			system: true,
+			get() {
+				return me.rows.value * me.tileHeight;
+			},
+		});
 
 		this.fg = sys.vars.add('__fg', { value: LightGrey, system: true });
 		this.bg = sys.vars.add('__bg', { value: Black, system: true });
