@@ -35,7 +35,7 @@ export default class System {
 		this.increment = this.vars.add('__increment', { value: 10, system: true });
 		this.speed = this.vars.add('__speed', { value: 2 });
 		this.vars.constant('pi', Math.PI);
-		this.version = this.vars.constant('__version$', '0.1.4');
+		this.version = this.vars.constant('__version$', '0.1.5');
 		this.vars.add('inkey$', {
 			value: '',
 			system: true,

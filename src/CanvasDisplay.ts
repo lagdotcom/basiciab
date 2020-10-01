@@ -1,3 +1,4 @@
+import hasFont from 'has-font';
 import Palette, { Black, DarkGrey, LightGrey } from './Palette';
 import System from './System';
 import Display from './types/Display';
@@ -10,6 +11,7 @@ export default class CanvasDisplay implements Display {
 	cx!: Var<number>;
 	cy!: Var<number>;
 	fg!: Var<number>;
+	font!: Var<string>;
 	inner!: CanvasRenderingContext2D;
 	innerCanvas!: HTMLCanvasElement;
 	outer: CanvasRenderingContext2D;
@@ -42,7 +44,7 @@ export default class CanvasDisplay implements Display {
 	}
 
 	attach(sys: System) {
-		const set = (v: Var<number>, value: number) => {
+		const set = (v: Var<any>, value: any) => {
 			v.value = value;
 			this.needsResize = true;
 		};
@@ -63,6 +65,11 @@ export default class CanvasDisplay implements Display {
 				return this.rows.value * this.tileHeight;
 			},
 		});
+		this.font = sys.vars.add('__font$', {
+			value: this.getBestFont(),
+			system: true,
+			set,
+		});
 
 		this.fg = sys.vars.add('__fg', { value: LightGrey, system: true });
 		this.bg = sys.vars.add('__bg', { value: Black, system: true });
@@ -70,6 +77,22 @@ export default class CanvasDisplay implements Display {
 		this.cx = sys.vars.add('__cx', { value: 0, system: true });
 		this.cy = sys.vars.add('__cy', { value: 0, system: true });
 		this.resize();
+	}
+
+	getBestFont() {
+		const size = '8px ';
+		const checks = [
+			'Iosevka Term',
+			'Lucida Console',
+			'Consolas',
+			'Courier New',
+		];
+
+		for (var i = 0; i < checks.length; i++) {
+			if (hasFont(checks[i])) return size + checks[i];
+		}
+
+		return size + 'monospace';
 	}
 
 	resize() {
@@ -86,7 +109,7 @@ export default class CanvasDisplay implements Display {
 
 		inner.textAlign = 'center';
 		inner.textBaseline = 'middle';
-		inner.font = '8px monospace';
+		inner.font = this.font.value;
 		inner.fillStyle = Palette[this.bg.value];
 		inner.fillRect(0, 0, width, height);
 		inner.imageSmoothingEnabled = false;

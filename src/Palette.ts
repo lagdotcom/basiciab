@@ -72,6 +72,7 @@ const Palette = [
 	'#ffffff',
 ];
 export default Palette;
+(window as any).Palette = Palette;
 
 export const Black = 0;
 export const LightGrey = 7;
