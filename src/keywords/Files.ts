@@ -32,7 +32,12 @@ export const Upload: Keyword = {
 		if (sys.state !== SystemState.Interpret)
 			throw new Error('UPLOAD not in programs');
 
+		document.querySelectorAll('.basiciab-upload').forEach(el => {
+			el.remove();
+		});
+
 		const input = document.createElement('input');
+		input.className = 'basiciab-upload';
 		input.type = 'file';
 		input.addEventListener('change', () => {
 			if (!input || !input.files) return;
@@ -44,6 +49,7 @@ export const Upload: Keyword = {
 				const prog = fr.result as string;
 
 				prog.split(/[\n\r]/).forEach(raw => {
+					input.remove();
 					const trimmed = raw.trim();
 					if (!trimmed) return;
 
@@ -56,7 +62,11 @@ export const Upload: Keyword = {
 			});
 			fr.readAsText(file);
 		});
+
+		// this works in Chrome, but not Firefox
 		input.click();
+		// ...so let Firefox users click the button manually
+		document.body.prepend(input);
 	},
 	render() {
 		return 'UPLOAD';

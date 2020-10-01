@@ -11,6 +11,8 @@ export const List: Keyword = {
 		sys.program.lines.forEach(l => {
 			sys.display.writenl(renderLine(l));
 		});
+
+		if (sys.program.lines.length === 0) sys.display.writenl('Program is empty');
 	},
 	render() {
 		return 'LIST';

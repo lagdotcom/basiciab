@@ -35,7 +35,7 @@ export default class System {
 		this.increment = this.vars.add('__increment', { value: 10, system: true });
 		this.speed = this.vars.add('__speed', { value: 2 });
 		this.vars.constant('pi', Math.PI);
-		this.version = this.vars.constant('__version$', '0.1.3');
+		this.version = this.vars.constant('__version$', '0.1.4');
 		this.vars.add('inkey$', {
 			value: '',
 			system: true,
@@ -111,9 +111,11 @@ export default class System {
 										const p = parse(inp);
 										console.log(p);
 										if (p.label !== null) {
-											this.add(p);
-											this.buffer = `${p.label + this.increment.value} `;
-											this.display.write(this.buffer);
+											if (p.statements.length) {
+												this.add(p);
+												this.buffer = `${p.label + this.increment.value} `;
+												this.display.write(this.buffer);
+											}
 										} else {
 											this.runStatement(p);
 										}

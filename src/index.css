@@ -1,11 +1,17 @@
 body {
 	display: flex;
+	flex-direction: column;
 	padding: 0;
 	margin: 0;
+	height: 100vh;
+}
+
+.basiciab-upload {
+	flex: 1 0 20px;
 }
 
 #basiciab {
-	width: 100%;
-	height: 100vh;
+	flex: 0 1 100vh;
+	image-rendering: crisp-edges;
 	image-rendering: pixelated;
 }
