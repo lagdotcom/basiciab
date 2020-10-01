@@ -9,7 +9,7 @@ export const Help: Keyword = {
 	visible: 'HELP',
 	expression: parseable('HELP'),
 	execute(sys: System) {
-		sys.display.writenl(`BASIC in a Browser v${sys.vars.get('__version$')}`);
+		sys.display.writenl(`BASIC in a Browser v${sys.version.value}`);
 		sys.display.writenl('Any questions? Ask lagdotcom@gmail.com');
 
 		sys.display.writenl(

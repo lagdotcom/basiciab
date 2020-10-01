@@ -17,6 +17,7 @@ export enum SystemState {
 }
 
 export default class System {
+	booted: boolean;
 	buffer: string;
 	increment: Var<number>;
 	line: number;
@@ -27,13 +28,14 @@ export default class System {
 	state: SystemState;
 	statement: number;
 	vars: Vars;
+	version: Var<string>;
 
 	constructor(public display: Display, public input: Input) {
 		this.vars = new Vars();
 		this.increment = this.vars.add('__increment', { value: 10, system: true });
 		this.speed = this.vars.add('__speed', { value: 2 });
 		this.vars.constant('pi', Math.PI);
-		this.vars.constant('__version$', '0.1.2');
+		this.version = this.vars.constant('__version$', '0.1.3');
 		this.vars.add('inkey$', {
 			value: '',
 			system: true,
@@ -51,6 +53,7 @@ export default class System {
 		this.state = SystemState.Interpret;
 		this.statement = 0;
 
+		this.booted = false;
 		this.tick = this.tick.bind(this);
 	}
 
@@ -78,6 +81,11 @@ export default class System {
 	}
 
 	tick(t: number) {
+		if (!this.booted) {
+			this.display.writenl(`BASIC in a Browser v${this.version.value} ready.`);
+			this.booted = true;
+		}
+
 		if (this.state === SystemState.Interpret) {
 			this.input.events.splice(0).forEach(e => {
 				switch (e.type) {
