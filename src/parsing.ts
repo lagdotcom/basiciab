@@ -52,7 +52,7 @@ class Parser {
 	) {}
 
 	get atEnd() {
-		return this.pos === this.value.length;
+		return this.pos >= this.value.length;
 	}
 
 	get remainder() {

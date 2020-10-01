@@ -46,7 +46,7 @@ export default class System {
 		display.attach(this);
 		this.buffer = '';
 		this.line = 0;
-		this.program = { name: 'unnamed', lines: [] };
+		this.program = { name: 'unnamed.bas', lines: [] };
 		this.stack = [];
 		this.state = SystemState.Interpret;
 		this.statement = 0;

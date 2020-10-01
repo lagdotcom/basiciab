@@ -1,6 +1,7 @@
 import Keyword from './types/Keyword';
 import { Clr } from './keywords/Clr';
 import { End } from './keywords/End';
+import { Download, Upload } from './keywords/Files';
 import { For, ForStep, NextImplicit, Next } from './keywords/For';
 import { Goto } from './keywords/Goto';
 import { Help } from './keywords/Help';
@@ -16,6 +17,7 @@ const Keywords: { [name: string]: Keyword } = {};
 
 [
 	Clr,
+	Download,
 	Else,
 	EndIf,
 	End,
@@ -34,6 +36,7 @@ const Keywords: { [name: string]: Keyword } = {};
 	Print,
 	RunLine,
 	Run,
+	Upload,
 	While,
 	Wend,
 	LetImplicit,
