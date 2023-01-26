@@ -1,11 +1,12 @@
-import { parseable } from '../parsing';
-import r from '../rendering';
 import System, { SystemState } from '../System';
-import { isNum } from '../tools';
+import Token, { VariableToken } from '../types/Token';
+
 import { ForClause } from '../types/Clause';
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
-import Token, { VariableToken } from '../types/Token';
+import { isNum } from '../tools';
+import parseSyntax from '../parseSyntax';
+import r from '../rendering';
 
 function doFor(
 	sys: System,
@@ -31,7 +32,7 @@ type ForArgs = [v: VariableToken, init: Token, end: Token];
 export const For: Keyword = {
 	name: 'for',
 	visible: 'FOR',
-	expression: parseable('FOR {var} = {expr} TO {expr}'),
+	expression: parseSyntax('FOR {var} = {expr} TO {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');
@@ -52,7 +53,7 @@ export const For: Keyword = {
 type ForStepArgs = [v: VariableToken, init: Token, end: Token, step: Token];
 export const ForStep: Keyword = {
 	name: 'for-step',
-	expression: parseable('FOR {var} = {expr} TO {expr} STEP {expr}'),
+	expression: parseSyntax('FOR {var} = {expr} TO {expr} STEP {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');
@@ -89,7 +90,7 @@ type NextArgs = [v: VariableToken];
 export const Next: Keyword = {
 	name: 'next',
 	visible: 'NEXT',
-	expression: parseable('NEXT {var}'),
+	expression: parseSyntax('NEXT {var}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('NEXT only in programs');
@@ -109,7 +110,7 @@ export const Next: Keyword = {
 
 export const NextImplicit: Keyword = {
 	name: 'next-implicit',
-	expression: parseable('NEXT'),
+	expression: parseSyntax('NEXT'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('FOR only in programs');

@@ -1,10 +1,11 @@
-import { parseable } from '../parsing';
-import r from '../rendering';
-import System from '../System';
+import Token, { VariableToken } from '../types/Token';
 import { isNum, isStr } from '../tools';
+
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
-import Token, { VariableToken } from '../types/Token';
+import System from '../System';
+import parseSyntax from '../parseSyntax';
+import r from '../rendering';
 
 type LetArgs = [v: VariableToken, expr: Token];
 
@@ -25,7 +26,7 @@ function execute(sys: System, s: Statement) {
 export const Let: Keyword = {
 	name: 'let',
 	visible: 'LET',
-	expression: parseable('LET {var} = {expr}'),
+	expression: parseSyntax('LET {var} = {expr}'),
 	execute,
 	render(s: Statement) {
 		const [v, expr] = s.args as LetArgs;
@@ -35,7 +36,7 @@ export const Let: Keyword = {
 
 export const LetImplicit: Keyword = {
 	name: 'let-implicit',
-	expression: parseable('{var} = {expr}'),
+	expression: parseSyntax('{var} = {expr}'),
 	execute,
 	render(s: Statement) {
 		const [v, expr] = s.args as LetArgs;

@@ -1,5 +1,5 @@
-import System from '../System';
 import { Fn } from '../types/Fn';
+import System from '../System';
 import Token from '../types/Token';
 
 export const Pos: Fn = {

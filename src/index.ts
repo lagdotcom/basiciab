@@ -1,6 +1,7 @@
+import './index.css';
+
 import CanvasDisplay from './CanvasDisplay';
 import DocumentInput from './DocumentInput';
-import './index.css';
 import System from './System';
 
 window.addEventListener('load', () => {
@@ -8,7 +9,7 @@ window.addEventListener('load', () => {
 	canvas.id = 'basiciab';
 	document.body.appendChild(canvas);
 
-	const display = new CanvasDisplay(canvas);
+	const display = new CanvasDisplay(canvas, 8, 16, 12, 30, 80);
 	const input = new DocumentInput();
 	const sys = new System(display, input);
 	(window as any).sys = sys;

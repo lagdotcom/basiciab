@@ -1,12 +1,14 @@
-import parse, { parseable } from '../parsing';
-import { renderLine } from '../rendering';
 import System, { SystemState } from '../System';
+import parse from '../parsing';
+import parseSyntax from '../parseSyntax';
+
 import Keyword from '../types/Keyword';
+import { renderLine } from '../rendering';
 
 export const Download: Keyword = {
 	name: 'download',
 	visible: 'DOWNLOAD',
-	expression: parseable('DOWNLOAD'),
+	expression: parseSyntax('DOWNLOAD'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Interpret)
 			throw new Error('UPLOAD not in programs');
@@ -27,7 +29,7 @@ export const Download: Keyword = {
 export const Upload: Keyword = {
 	name: 'upload',
 	visible: 'UPLOAD',
-	expression: parseable('UPLOAD'),
+	expression: parseSyntax('UPLOAD'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Interpret)
 			throw new Error('UPLOAD not in programs');

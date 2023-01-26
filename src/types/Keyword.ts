@@ -1,4 +1,4 @@
-import { ParsingExpression } from '../parsing';
+import { ParsingExpression } from '../parseSyntax';
 import System from '../System';
 import Statement from './Statement';
 

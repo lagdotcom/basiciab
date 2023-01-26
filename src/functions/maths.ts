@@ -1,7 +1,7 @@
-import System from '../System';
-import { isNum } from '../tools';
 import { Fn } from '../types/Fn';
+import System from '../System';
 import Token from '../types/Token';
+import { isNum } from '../tools';
 
 export const Abs: Fn = {
 	name: 'abs',
@@ -72,9 +72,21 @@ export const Log: Fn = {
 export const Rnd: Fn = {
 	name: 'rnd',
 	evaluate(sys: System, args: Token[]) {
-		if (args.length !== 0) throw new Error(`RND takes no arguments`);
+		let mul = 1;
+		switch (args.length) {
+			case 0:
+				break;
+			case 1:
+				const mulArg = sys.evaluate(args[0]);
+				if (!isNum(mulArg)) throw new Error(`RND only uses numbers`);
+				mul = mulArg;
+				break;
 
-		return Math.random();
+			default:
+				throw new Error(`RND takes one or no arguments`);
+		}
+
+		return Math.random() * mul;
 	},
 };
 

@@ -1,15 +1,15 @@
-import { parseable } from '../parsing';
-import r from '../rendering';
-import System from '../System';
-import { isNum } from '../tools';
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
+import System from '../System';
 import Token from '../types/Token';
+import { isNum } from '../tools';
+import parseSyntax from '../parseSyntax';
+import r from '../rendering';
 
 export const Run: Keyword = {
 	name: 'run',
 	visible: 'RUN',
-	expression: parseable('RUN'),
+	expression: parseSyntax('RUN'),
 	execute(sys: System) {
 		sys.run();
 	},
@@ -21,7 +21,7 @@ export const Run: Keyword = {
 type RunLineArgs = [expr: Token];
 export const RunLine: Keyword = {
 	name: 'run-line',
-	expression: parseable('RUN {expr}'),
+	expression: parseSyntax('RUN {expr}'),
 	execute(sys: System, s: Statement) {
 		const [expr] = s.args as RunLineArgs;
 		const label = sys.evaluate(expr);

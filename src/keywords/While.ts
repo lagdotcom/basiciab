@@ -1,13 +1,14 @@
-import { parseable } from '../parsing';
-import r from '../rendering';
 import System, { SystemState } from '../System';
+
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
+import parseSyntax from '../parseSyntax';
+import r from '../rendering';
 
 export const While: Keyword = {
 	name: 'while',
 	visible: 'WHILE',
-	expression: parseable('WHILE {expr}'),
+	expression: parseSyntax('WHILE {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('WHILE only in programs');
@@ -31,7 +32,7 @@ export const While: Keyword = {
 export const Wend: Keyword = {
 	name: 'wend',
 	visible: 'WEND',
-	expression: parseable('WEND'),
+	expression: parseSyntax('WEND'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('WEND only in programs');

@@ -1,0 +1,1 @@
+10 PRINT CHR$(INT(RND(1)*2)*45 + 47); : GOTO 10

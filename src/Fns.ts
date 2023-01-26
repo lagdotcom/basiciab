@@ -1,45 +1,13 @@
-import { Asc, Chr, Left, Len, Mid, Right, Str, Val } from './functions/string';
-import { Pos } from './functions/display';
-import {
-	Abs,
-	Atn,
-	Cos,
-	Exp,
-	Int,
-	Log,
-	Rnd,
-	Sgn,
-	Sin,
-	Sqr,
-	Tan,
-} from './functions/maths';
-import { Fn } from './types/Fn';
+import * as display from './functions/display';
+import * as maths from './functions/maths';
+import * as string from './functions/string';
 
-const Fns: { [name: string]: Fn } = {};
-
-[
-	Abs,
-	Asc,
-	Atn,
-	Chr,
-	Cos,
-	Exp,
-	Int,
-	Left,
-	Len,
-	Log,
-	Mid,
-	Pos,
-	Right,
-	Rnd,
-	Sgn,
-	Sin,
-	Sqr,
-	Str,
-	Tan,
-	Val,
-].forEach(f => {
-	Fns[f.name.toUpperCase()] = f;
-});
+const Fns = Object.fromEntries(
+	[
+		...Object.values(display),
+		...Object.values(string),
+		...Object.values(maths),
+	].map(fn => [fn.name.toUpperCase(), fn])
+);
 
 export default Fns;

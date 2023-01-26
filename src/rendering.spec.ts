@@ -1,9 +1,8 @@
-import { assert } from 'chai';
 import {
-	ST,
-	VAR,
 	NUM,
 	OP,
+	ST,
+	VAR,
 	simpleProgramLines,
 	simpleProgramParsed,
 } from './helpers';
@@ -14,19 +13,18 @@ describe('rendering', () => {
 		const expected = simpleProgramLines.join('\n');
 		const rendered = simpleProgramParsed.map(renderLine).join('\n');
 
-		assert.equal(rendered, expected);
+		expect(rendered).toEqual(expected);
 	});
 
 	it('should not mangle operator precedence', () => {
-		assert.equal(
+		expect(
 			renderStatement(
 				ST(
 					'let-implicit',
 					VAR('a'),
 					OP(OP(NUM(1), '+', NUM(2)), '*', OP(NUM(3), '-', NUM(4)))
 				)
-			),
-			'a = (1 + 2) * (3 - 4)'
-		);
+			)
+		).toEqual('a = (1 + 2) * (3 - 4)');
 	});
 });

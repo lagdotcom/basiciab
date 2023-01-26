@@ -1,7 +1,8 @@
+import Token, { BinaryOp } from './types/Token';
+
 import Keywords from './Keywords';
 import Line from './types/Line';
 import Statement from './types/Statement';
-import Token, { BinaryOp } from './types/Token';
 
 const precedence: { [op in BinaryOp]: number } = {
 	'=': 1,

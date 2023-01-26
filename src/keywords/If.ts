@@ -1,4 +1,4 @@
-import { parseable } from '../parsing';
+import parseSyntax from '../parseSyntax';
 import r from '../rendering';
 import System, { SystemState } from '../System';
 import Keyword from '../types/Keyword';
@@ -8,7 +8,7 @@ import Token, { NumberToken } from '../types/Token';
 export const If: Keyword = {
 	name: 'if',
 	visible: 'IF',
-	expression: parseable('IF {expr}'),
+	expression: parseSyntax('IF {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('IF only in programs');
@@ -30,7 +30,7 @@ export const If: Keyword = {
 export const Else: Keyword = {
 	name: 'else',
 	visible: 'ELSE',
-	expression: parseable('ELSE'),
+	expression: parseSyntax('ELSE'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('ELSE only in programs');
@@ -49,7 +49,7 @@ export const Else: Keyword = {
 export const EndIf: Keyword = {
 	name: 'endif',
 	visible: 'ENDIF',
-	expression: parseable('ENDIF'),
+	expression: parseSyntax('ENDIF'),
 	execute(sys: System) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('ENDIF only in programs');
@@ -62,7 +62,7 @@ export const EndIf: Keyword = {
 type IfThenGotoArgs = [expr: Token, label: NumberToken];
 export const IfThenGoto: Keyword = {
 	name: 'if-then-goto',
-	expression: parseable('IF {expr} THEN {number}'),
+	expression: parseSyntax('IF {expr} THEN {number}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('IF only in programs');
@@ -86,7 +86,7 @@ type IfThenElseGotoArgs = [
 ];
 export const IfThenElseGoto: Keyword = {
 	name: 'if-then-else-goto',
-	expression: parseable('IF {expr} THEN {number} ELSE {number}'),
+	expression: parseSyntax('IF {expr} THEN {number} ELSE {number}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('IF only in programs');

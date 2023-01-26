@@ -1,38 +1,10 @@
-import Keywords from './Keywords';
+import Token, { BinaryOp } from './types/Token';
 import { isNum, isStr } from './tools';
+
 import Keyword from './types/Keyword';
+import Keywords from './Keywords';
 import Line from './types/Line';
 import Statement from './types/Statement';
-import Token, { BinaryOp } from './types/Token';
-
-interface LiteralPattern {
-	type: 'literal';
-	value: string;
-}
-interface VariablePattern {
-	type: 'var';
-}
-interface ExpressionPattern {
-	type: 'expr';
-}
-interface NumberPattern {
-	type: 'number';
-}
-type ParsingPattern =
-	| LiteralPattern
-	| VariablePattern
-	| ExpressionPattern
-	| NumberPattern;
-export type ParsingExpression = ParsingPattern[];
-
-export function parseable(s: string): ParsingExpression {
-	return s.split(' ').map(value => {
-		if (value == '{var}') return { type: 'var' };
-		if (value == '{expr}') return { type: 'expr' };
-		if (value == '{number}') return { type: 'number' };
-		return { type: 'literal', value };
-	});
-}
 
 const variableRegex = /^[a-zA-Z_][a-zA-Z0-9_]*\$?$/;
 export function isValidVariableName(s: string) {
@@ -195,7 +167,7 @@ class Parser {
 
 		const old = this.pos;
 		var binary: BinaryOp | undefined;
-		var fn: string | undefined;
+		const fnStack: string[] = [];
 		const tokens: Token[] = [];
 
 		const checkBinary = () => {
@@ -293,17 +265,17 @@ class Parser {
 				case '(':
 					const top = tokens.pop();
 					if (top && top.type === 'variable') {
-						fn = top.name;
+						fnStack.push(top.name);
 						continue;
 					}
 					break;
 
 				case ')':
+					const fn = fnStack.pop();
 					if (fn) {
 						const call: Token = { type: 'fn', name: fn, args: tokens.slice(0) };
 						this.log('fn:', call);
 						tokens.splice(0, tokens.length, call);
-						fn = undefined;
 						continue;
 					}
 					break;
@@ -329,7 +301,7 @@ class Parser {
 	}
 
 	log(...args: any[]) {
-		//console.log(`parse@${this.pos}`, ...args);
+		// console.log(`parse@${this.pos}`, ...args);
 	}
 }
 

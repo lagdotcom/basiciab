@@ -1,16 +1,17 @@
-import { parseable } from '../parsing';
-import r from '../rendering';
 import System, { SystemState } from '../System';
-import { isNum } from '../tools';
+
 import Keyword from '../types/Keyword';
 import Statement from '../types/Statement';
 import Token from '../types/Token';
+import { isNum } from '../tools';
+import parseSyntax from '../parseSyntax';
+import r from '../rendering';
 
 type GotoArgs = [expr: Token];
 export const Goto: Keyword = {
 	name: 'goto',
 	visible: 'GOTO',
-	expression: parseable('GOTO {expr}'),
+	expression: parseSyntax('GOTO {expr}'),
 	execute(sys: System, s: Statement) {
 		if (sys.state !== SystemState.Execute)
 			throw new Error('GOTO only in programs');

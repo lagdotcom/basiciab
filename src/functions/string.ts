@@ -1,6 +1,7 @@
-import System from '../System';
 import { isNum, isStr } from '../tools';
+
 import { Fn } from '../types/Fn';
+import System from '../System';
 import Token from '../types/Token';
 
 export const Asc: Fn = {

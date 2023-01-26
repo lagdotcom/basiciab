@@ -2,10 +2,13 @@ module.exports = {
 	entry: './src/index',
 	plugins: [],
 	output: {
-		path: __dirname + '/dist',
+		path: __dirname + '/docs',
 		filename: 'main.js',
 	},
 	devtool: 'source-map',
+	devServer: {
+		static: './docs',
+	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js'],
 	},
@@ -18,7 +21,7 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				loader: ['style-loader', 'css-loader'],
+				use: ['style-loader', 'css-loader'],
 			},
 			{ test: /\.tsx?$/, loader: 'ts-loader' },
 		],

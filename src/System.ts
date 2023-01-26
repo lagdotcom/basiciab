@@ -1,15 +1,16 @@
-import Clause from './types/Clause';
 import Token, { BinaryToken } from './types/Token';
 import Vars, { Var } from './Vars';
-import Fns from './Fns';
-import Display from './types/Display';
-import Program from './types/Program';
-import Line from './types/Line';
-import Keywords from './Keywords';
-import Statement from './types/Statement';
-import Input from './types/Input';
-import parse from './parsing';
 import { asBool, isStr, isUndef } from './tools';
+
+import Clause from './types/Clause';
+import Display from './types/Display';
+import Fns from './Fns';
+import Input from './types/Input';
+import Keywords from './Keywords';
+import Line from './types/Line';
+import Program from './types/Program';
+import Statement from './types/Statement';
+import parse from './parsing';
 
 export enum SystemState {
 	Interpret,
@@ -35,7 +36,7 @@ export default class System {
 		this.increment = this.vars.add('__increment', { value: 10, system: true });
 		this.speed = this.vars.add('__speed', { value: 2 });
 		this.vars.constant('pi', Math.PI);
-		this.version = this.vars.constant('__version$', '0.1.5');
+		this.version = this.vars.constant('__version$', '0.1.6');
 		this.vars.add('inkey$', {
 			value: '',
 			system: true,

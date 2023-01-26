@@ -1,10 +1,7 @@
-import { assert } from 'chai';
 import {
-	LINE,
-	ST,
 	NUM,
+	ST,
 	VAR,
-	OP,
 	simpleProgramLines,
 	simpleProgramParsed,
 } from './helpers';
@@ -12,18 +9,15 @@ import parse, { isValidVariableName } from './parsing';
 
 describe('parsing', () => {
 	it('can decide what a valid variable name is', () => {
-		assert.isTrue(isValidVariableName('hello'));
-		assert.isTrue(isValidVariableName('a$'));
-		assert.isTrue(isValidVariableName('_this7SUCKS'));
-		assert.isFalse(isValidVariableName('3invalid'));
-		assert.isFalse(isValidVariableName('aname?'));
+		expect(isValidVariableName('hello')).toBeTruthy();
+		expect(isValidVariableName('a$')).toBeTruthy();
+		expect(isValidVariableName('_this7SUCKS')).toBeTruthy();
+		expect(isValidVariableName('3invalid')).toBeFalsy();
+		expect(isValidVariableName('aname?')).toBeFalsy();
 	});
 
 	it('can parse a simple statement', () => {
-		assert.deepStrictEqual(
-			parse('X = 3'),
-			ST('let-implicit', VAR('X'), NUM(3))
-		);
+		expect(parse('X = 3')).toStrictEqual(ST('let-implicit', VAR('X'), NUM(3)));
 
 		// assert.deepStrictEqual(
 		// 	parse('10 LET X=3+2*Y'),
@@ -33,6 +27,6 @@ describe('parsing', () => {
 
 	it('can parse a simple program', () => {
 		const lines = simpleProgramLines.map(parse);
-		assert.deepStrictEqual(lines, simpleProgramParsed);
+		expect(lines).toStrictEqual(simpleProgramParsed);
 	});
 });

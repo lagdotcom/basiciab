@@ -2,14 +2,14 @@ import Keyword from '../types/Keyword';
 import System from '../System';
 import parseSyntax from '../parseSyntax';
 
-export const Clr: Keyword = {
-	name: 'clr',
-	visible: 'CLR',
-	expression: parseSyntax('CLR'),
+export const Cls: Keyword = {
+	name: 'cls',
+	visible: 'CLS',
+	expression: parseSyntax('CLS'),
 	execute(sys: System) {
-		sys.vars.clear();
+		sys.display.cls();
 	},
 	render() {
-		return 'CLR';
+		return 'CLS';
 	},
 };

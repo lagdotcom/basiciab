@@ -1,8 +1,9 @@
-import hasFont from 'has-font';
 import Palette, { Black, DarkGrey, LightGrey } from './Palette';
-import System from './System';
+
 import Display from './types/Display';
+import System from './System';
 import { Var } from './Vars';
+import hasFont from 'has-font';
 
 export default class CanvasDisplay implements Display {
 	bg!: Var<number>;
@@ -21,7 +22,10 @@ export default class CanvasDisplay implements Display {
 	constructor(
 		public outerCanvas: HTMLCanvasElement,
 		public tileWidth: number = 8,
-		public tileHeight: number = 8
+		public tileHeight: number = 8,
+		public fontSize: number = 8,
+		public defaultRows: number = 40,
+		public defaultCols: number = 50
 	) {
 		const outer = outerCanvas.getContext('2d');
 		if (!outer) throw new Error('Could not get outer canvas context');
@@ -49,8 +53,16 @@ export default class CanvasDisplay implements Display {
 			this.needsResize = true;
 		};
 
-		this.rows = sys.vars.add('__rows', { value: 40, system: true, set });
-		this.cols = sys.vars.add('__cols', { value: 50, system: true, set });
+		this.rows = sys.vars.add('__rows', {
+			value: this.defaultRows,
+			system: true,
+			set,
+		});
+		this.cols = sys.vars.add('__cols', {
+			value: this.defaultCols,
+			system: true,
+			set,
+		});
 		sys.vars.add('__width', {
 			value: 0,
 			system: true,
@@ -80,7 +92,7 @@ export default class CanvasDisplay implements Display {
 	}
 
 	getBestFont() {
-		const size = '8px ';
+		const size = `${this.fontSize}px `;
 		const checks = [
 			'Iosevka Term',
 			'Lucida Console',
@@ -93,6 +105,10 @@ export default class CanvasDisplay implements Display {
 		}
 
 		return size + 'monospace';
+	}
+
+	cls() {
+		this.resize();
 	}
 
 	resize() {

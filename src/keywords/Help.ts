@@ -1,13 +1,13 @@
 import Fns from '../Fns';
 import Keywords from '../Keywords';
-import { parseable } from '../parsing';
+import parseSyntax from '../parseSyntax';
 import System from '../System';
 import Keyword from '../types/Keyword';
 
 export const Help: Keyword = {
 	name: 'help',
 	visible: 'HELP',
-	expression: parseable('HELP'),
+	expression: parseSyntax('HELP'),
 	execute(sys: System) {
 		sys.display.writenl(`BASIC in a Browser v${sys.version.value}`);
 		sys.display.writenl('Any questions? Ask lagdotcom@gmail.com');

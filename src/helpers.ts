@@ -1,7 +1,3 @@
-import Display from './types/Display';
-import Input from './types/Input';
-import Line from './types/Line';
-import Statement from './types/Statement';
 import Token, {
 	BinaryOp,
 	BinaryToken,
@@ -10,6 +6,11 @@ import Token, {
 	StringToken,
 	VariableToken,
 } from './types/Token';
+
+import Display from './types/Display';
+import Input from './types/Input';
+import Line from './types/Line';
+import Statement from './types/Statement';
 
 export const LINE = (label: number, ...statements: Statement[]): Line => ({
 	label,
@@ -62,6 +63,7 @@ export const simpleProgramParsed = [
 export const DummyDisplay: Display = {
 	attach() {},
 	bs() {},
+	cls() {},
 	line() {},
 	nl() {},
 	update() {},
